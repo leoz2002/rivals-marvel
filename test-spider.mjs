@@ -1,0 +1,8 @@
+import assert from 'node:assert/strict';import {ArenaEngine} from './dist/engine.js';import {useWeb,advanceWeb,spiderState,updateSpider,advanceStar} from './dist/spider.js';
+const fixture=()=>{const e=new ArenaEngine({},()=>.5),s=e.add(6,0,200,250),t=e.add(3,1,400,250);t.hp=t.maxHp=2000;return{e,s,t};};
+for(const variant of ['approach','pull']){const{e,s,t}=fixture();assert.equal(s.hp,400);assert(useWeb(e,s,t,variant));assert.equal(s.spider.uses,1);e.time=.76;advanceWeb(e,variant==='approach'?s:t);assert.equal(t.hp,1984);assert(Math.hypot(t.vx,t.vy)>600);assert(!useWeb(e,s,t,variant));}
+{const{e,s,t}=fixture();assert(useWeb(e,s,t,'prison'));e.time=.65;advanceWeb(e,t);assert.equal(t.stunUntil,2.65);const x=t.x,y=t.y;e.step(1/120);assert.equal(t.x,x);assert.equal(t.y,y);const hp=s.hp;e.hit(t,s,1,0);assert.equal(s.hp,hp);}
+{const{e,s,t}=fixture();useWeb(e,s,t,'throw');e.time=.9;advanceWeb(e,t);assert.equal(t.launched.remaining,3);for(let k=0;k<3;k++){e.time+=.13;e.impact(t);}assert.equal(t.hp,1985);assert.equal(t.launched,null);e.time+=.2;e.impact(t);assert.equal(t.hp,1985);}
+{const{e,s,t}=fixture();spiderState(s).uses=15;updateSpider(e,s);assert(s.star);assert.equal(s.spider.uses,0);const hp=s.hp;e.hurt(t,s,10);assert.equal(s.hp,hp);for(let n=1;n<=240;n++){e.time=n/120;advanceStar(e,s);}assert(!s.star);assert(t.hp<2000);assert.equal((2000-t.hp)%8,0);}
+{const e=new ArenaEngine({},()=>.999),l=e.add(0,0,100,100);l.ultCharge=100;e.updatePowers(l,0);assert.equal(l.form.character,6);}
+console.log('PASS spider attributes, both pull combos, charge/cooldown, exact stun, 3 impacts, star damage and Loki copy');

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Multiverse Ball Arena</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="./"
+        ><i>◉</i><span>MULTIVERSE<small>BALL ARENA</small></span></a
+      ><span class="micro">● LABORATÓRIO DE COMBATE &nbsp; / &nbsp; V.03</span>
+    </header>
+    <main>
+      <div class="titlebar">
+        <div>
+          <p class="eyebrow">SEU ELENCO. SUAS REGRAS.</p>
+          <h1>Prepare o <em>imprevisível.</em></h1>
+          <p class="muted">
+            Monte as equipes, posicione seus personagens e deixe a física
+            decidir.
+          </p>
+        </div>
+        <button id="save">↧ Salvar formação</button>
+      </div>
+      <div class="workspace">
+        <section class="arena-panel">
+          <div class="panel-top">
+            <div>
+              ● &nbsp; <b>ARENA 01</b
+              ><span class="tag" id="mode">PREPARAÇÃO</span>
+            </div>
+            <span class="micro" id="dimensions"></span>
+          </div>
+          <div id="viewport">
+            <canvas
+              id="arena"
+              aria-label="Arena de combate. Arraste as bolinhas para posicionar."
+            ></canvas>
+            <div id="result" hidden></div>
+          </div>
+          <div class="arena-footer">
+            <span>✥ Arraste as bolinhas para posicionar</span>
+            <div class="zoom">
+              <button id="minus" aria-label="Diminuir zoom">−</button
+              ><span id="zoomLabel">100%</span
+              ><button id="plus" aria-label="Aumentar zoom">+</button
+              ><button id="fit">Ajustar</button>
+            </div>
+          </div>
+          <div id="combatHud" aria-label="Vida e habilidades dos combatentes"></div>
+          <div id="furyHud" aria-label="Fúria dos personagens"></div>
+          <div class="cleanup-controls">
+            <button
+              id="trash"
+              title="Arraste uma bolinha até aqui ou selecione e clique"
+            >
+              ▤ Lixeira · arraste aqui</button
+            ><button id="quality" aria-pressed="true">Modo leve: ligado</button>
+          </div>
+          <div class="transport">
+            <button id="start" class="primary">▶ START</button
+            ><button id="restart">↻ Reiniciar</button
+            ><button id="prepare">↶ Preparação</button>
+            <div class="speeds">
+              <button data-speed="0.5">0,5×</button
+              ><button data-speed="1" class="active">1×</button
+              ><button data-speed="2">2×</button>
+            </div>
+            <span id="clock">00:00</span
+            ><button id="sound" aria-label="Ativar ou desativar áudio">
+              ♫ Som ligado
+            </button>
+          </div>
+        </section>
+        <aside>
+          <section class="side-panel">
+            <h2>Visão da batalha <small>AO VIVO</small></h2>
+            <div class="stat-row">
+              <div><strong id="alive">6</strong><span>Na arena</span></div>
+              <div><strong id="hits">0</strong><span>Ataques</span></div>
+              <div>
+                <strong id="totalDamage">0</strong><span>Dano total</span>
+              </div>
+            </div>
+            <div id="teams"></div>
+          </section>
+          <section class="side-panel">
+            <h2>Personagem selecionado <small>⌖</small></h2>
+            <div id="selected"></div>
+          </section>
+          <section class="side-panel settings">
+            <h2>Configurar arena <small>⚙</small></h2>
+            <p class="settings-note">
+              Bruce, Hulk, Loki, Homem de Ferro e Homem-Aranha usam suas fichas oficiais. Vida e dano abaixo
+              valem para os demais. Velocidade ajusta o ritmo de todos
+              proporcionalmente.
+            </p>
+            <label
+              >Tamanho<select id="size">
+                <option value="900">Padrão · 900 × 540</option>
+                <option value="1200">Grande · 1200 × 720</option>
+                <option value="1600">Expandida · 1600 × 960</option>
+              </select></label
+            >
+            <div class="settings-grid">
+              <label
+                >Vida base<input
+                  id="hp"
+                  type="number"
+                  min="10"
+                  max="10000"
+                  value="100" /></label
+              ><label
+                >Dano básico<input
+                  id="damage"
+                  type="number"
+                  min="1"
+                  max="1000"
+                  value="10" /></label
+              ><label
+                >Recarga (s)<input
+                  id="cooldown"
+                  type="number"
+                  min="0.1"
+                  max="60"
+                  step="0.1"
+                  value="2" /></label
+              ><label
+                >Velocidade<input
+                  id="velocity"
+                  type="number"
+                  min="40"
+                  max="400"
+                  value="180"
+              /></label>
+            </div>
+            <button id="load" class="wide">↥ Carregar formação</button>
+          </section>
+          <section class="side-panel">
+            <h2>Últimas habilidades <small>AUTO</small></h2>
+            <div id="battleLog" class="battle-log">
+              As habilidades começam com o combate.
+            </div>
+          </section>
+        </aside>
+        <section class="roster-panel">
+          <div class="roster-head">
+            <h2>Escolha seu elenco <span class="tag" id="rosterCount">5 PERSONAGENS</span></h2>
+            <div class="roster-tools">
+              <select id="universe" aria-label="Universo">
+                <option value="Marvel">Marvel</option><option value="Super">Super · Hulk e Void</option></select
+              ><label
+                >Adicionar à
+                <select id="addTeam">
+                  <option value="0">Equipe Azul</option>
+                  <option value="1">Equipe Coral</option>
+                  <option value="2">Equipe Verde</option>
+                  <option value="3">Equipe Violeta</option>
+                </select></label
+              >
+            </div>
+          </div>
+          <div id="roster"></div>
+          <div class="roster-footer">
+            <span>＋ Clique em um personagem para adicionar uma cópia.</span
+            ><button id="clear">Limpar arena</button>
+          </div>
+        </section>
+      </div>
+      <footer>
+        FÍSICA EM MOVIMENTO
+        <span
+          >Fichas 01–04 ativas · Hulk 1,4× · Até 5 clones por Loki ·
+          Metamorfose: todo o catálogo, incluindo Hulk e Void.</span
+        >
+      </footer>
+    </main>
+    <div id="toast" role="status"></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
